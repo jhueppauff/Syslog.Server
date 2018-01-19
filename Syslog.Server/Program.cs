@@ -46,7 +46,14 @@
 
         static void Main(string[] args)
         {
-            logFile = args[0];
+            if (args[0] != null)
+            {
+                logFile = args[0];
+            }
+            else
+            {
+                Console.WriteLine("Missing Argument (logfile)");
+            }
 
             // Main processing Thread
             Thread handler = new Thread(new ThreadStart(HandleMessage))
