@@ -127,12 +127,7 @@
         {
             foreach (Data.Message message in messages)
             {
-                Thread dbhandler = new Thread(() => LogToFile(message.MessageText, message.SourceIP, message.RecvTime))
-                {
-                    IsBackground = true
-                };
-
-                dbhandler.Start();
+                LogToFile(message.MessageText, message.SourceIP, message.RecvTime);
                 Console.WriteLine(message.MessageText);
             }
         }

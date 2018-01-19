@@ -19,6 +19,7 @@ namespace Syslog.Server.Data
             lock(locker)
             {
                 StreamWriter sw;
+
                 sw = File.AppendText(path);
                 sw.WriteLine(message);
                 sw.Close();
