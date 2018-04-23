@@ -2,7 +2,7 @@
   "profiles": {
     "Syslog.Server": {
       "commandName": "Project",
-      "commandLineArgs": "\"C:\\Users\\julian\\source\\repos\\Syslog.Server\\Syslog.Server\\bin\\Debug\\netcoreapp2.0\\syslog.txt\""
+      "commandLineArgs": "\".\\syslog.txt\""
     }
   }
 }

@@ -26,7 +26,7 @@ namespace Syslog.Server
         /// <summary>
         /// Message Queue of the type Data.Message.
         /// </summary>
-        private static Queue<Message> messages = new Queue<Message>();
+        private static Queue<Message> messageQueue = new Queue<Message>();
 
         /// <summary>
         /// Message Trigger
@@ -74,7 +74,7 @@ namespace Syslog.Server
             
             /* Main Loop */
             /* Listen for incoming data on udp port 514 (default for SysLog events) */
-            while (queueing || messages.Count != 0)
+            while (queueing || messageQueue.Count != 0)
             {
                 try
                 {
@@ -90,9 +90,9 @@ namespace Syslog.Server
                         SourceIP = anyIP.Address
                     };
 
-                    lock (messages)
+                    lock (messageQueue)
                     {
-                        messages.Enqueue(msg);
+                        messageQueue.Enqueue(msg);
                     }
 
                     messageTrigger.Set();
@@ -115,9 +115,9 @@ namespace Syslog.Server
                 messageTrigger.WaitOne(5000);    // A 5000ms timeout to force processing
                 Message[] messageArray = null;
 
-                lock (messages)
+                lock (messageQueue)
                 {
-                    messageArray = messages.ToArray();
+                    messageArray = messageQueue.ToArray();
                 }
 
                 Thread messageprochandler = new Thread(() => HandleMessageProcessing(messageArray))
@@ -136,9 +136,13 @@ namespace Syslog.Server
         {
             foreach (Data.Message message in messages)
             {
-                Program.messages.Dequeue();
                 LogToFile(message.MessageText, message.SourceIP, message.RecvTime);
                 Console.WriteLine(message.MessageText);
+
+                if (Program.messageQueue.Count != 0)
+                {
+                    Program.messageQueue.Dequeue();
+                }
             }
         }
 
@@ -151,7 +155,7 @@ namespace Syslog.Server
         private static void LogToFile(string msg , IPAddress ipSourceAddress, DateTime receiveTime)
         {
             Log log = new Log();
-            log.WriteToLog($"{msg}, {ipSourceAddress}, {receiveTime}", logFile);
+            log.WriteToLog($"{msg}; {ipSourceAddress}; {receiveTime}\n", logFile);
         }
     }
 }
