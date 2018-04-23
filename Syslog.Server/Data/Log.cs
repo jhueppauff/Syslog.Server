@@ -1,30 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿//-----------------------------------------------------------------------
+// <copyright file="Log.cs" company="https://github.com/jhueppauff/Syslog.Server">
+// Copyright 2018 Jhueppauff
+// MIT License
+// For licence details visit https://github.com/jhueppauff/Syslog.Server/blob/master/LICENSE
+// </copyright>
+//-----------------------------------------------------------------------
 
 namespace Syslog.Server.Data
 {
-    class Log
+    using System.IO;
+    using System.Text;
+
+    /// <summary>
+    /// Log Class
+    /// </summary>
+    public class Log
     {
-        public Log()
-        {
-
-        }
-
+        /// <summary>
+        /// Lock object to log file access
+        /// </summary>
         private static readonly object locker = new object();
 
-        public void WriteToLog (string message, string path)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Log"/> class.
+        /// </summary>
+        public Log()
         {
-            lock(locker)
-            {
-                StreamWriter sw;
-
-                sw = File.AppendText(path);
-                sw.WriteLine(message);
-                sw.Close();
-            }
         }
 
+        /// <summary>
+        /// Writes to log.
+        /// </summary>
+        /// <param name="message">The message to write.</param>
+        /// <param name="path">The path of the file.</param>
+        public void WriteToLog(string message, string path)
+        {
+            lock (locker)
+            {
+                using (FileStream fileStream = new FileStream(path: path, mode: FileMode.Append))
+                {
+                    byte[] encodedText = Encoding.Unicode.GetBytes(message);
+                    fileStream.Write(encodedText, 0, encodedText.Length);
+                }
+            }
+        }
     }
 }

@@ -1,10 +1,16 @@
-﻿namespace Syslog.Server
+﻿//-----------------------------------------------------------------------
+// <copyright file="Program.cs" company="https://github.com/jhueppauff/Syslog.Server">
+// Copyright 2018 Jhueppauff
+// MIT License
+// For licence details visit https://github.com/jhueppauff/Syslog.Server/blob/master/LICENSE
+// </copyright>
+//-----------------------------------------------------------------------
+
+namespace Syslog.Server
 {
     using Syslog.Server.Data;
     using System;
     using System.Collections.Generic;
-    using System.Data;
-    using System.Linq;
     using System.Net;
     using System.Net.Sockets;
     using System.Text;
@@ -42,6 +48,9 @@
         /// </summary>
         private static byte[] bytesReceive;
 
+        /// <summary>
+        /// The log file
+        /// </summary>
         private static string logFile;
 
         static void Main(string[] args)
@@ -142,7 +151,7 @@
         private static void LogToFile(string msg , IPAddress ipSourceAddress, DateTime receiveTime)
         {
             Log log = new Log();
-            log.WriteToLog(msg, logFile);
+            log.WriteToLog($"{msg}, {ipSourceAddress}, {receiveTime}", logFile);
         }
     }
 }
