@@ -127,6 +127,7 @@
         {
             foreach (Data.Message message in messages)
             {
+                Program.messages.Dequeue();
                 LogToFile(message.MessageText, message.SourceIP, message.RecvTime);
                 Console.WriteLine(message.MessageText);
             }
