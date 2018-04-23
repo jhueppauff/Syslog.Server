@@ -19,7 +19,7 @@ namespace Syslog.Server.Data
         /// <summary>
         /// Lock object to log file access
         /// </summary>
-        private static readonly object locker = new object();
+        private static readonly object Locker = new object();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Log"/> class.
@@ -35,7 +35,7 @@ namespace Syslog.Server.Data
         /// <param name="path">The path of the file.</param>
         public void WriteToLog(string message, string path)
         {
-            lock (locker)
+            lock (Locker)
             {
                 using (FileStream fileStream = new FileStream(path: path, mode: FileMode.Append))
                 {

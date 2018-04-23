@@ -8,15 +8,19 @@
 
 namespace Syslog.Server
 {
-    using Syslog.Server.Data;
     using System;
     using System.Collections.Generic;
     using System.Net;
     using System.Net.Sockets;
     using System.Text;
     using System.Threading;
+    using Syslog.Server.Data;
 
-    class Program : IDisposable
+    /// <summary>
+    /// Program class
+    /// </summary>
+    /// <seealso cref="System.IDisposable" />
+    public class Program : IDisposable
     {
         /// <summary>
         /// As long this is true the Service will continue to receive new Messages.
@@ -37,7 +41,7 @@ namespace Syslog.Server
         /// Listener Address
         /// </summary>
         private static IPEndPoint anyIP = new IPEndPoint(IPAddress.Any, 0);
-
+        
         /// <summary>
         /// Listener Port and Protocol
         /// </summary>
@@ -48,7 +52,16 @@ namespace Syslog.Server
         /// </summary>
         private static string logFile;
 
-        static void Main(string[] args)
+        /// <summary>
+        /// The disposed value
+        /// </summary>
+        private bool disposedValue = false;
+
+        /// <summary>
+        /// Defines the entry point of the application.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
+        public static void Main(string[] args)
         {
             if (args[0] != null)
             {
@@ -65,16 +78,15 @@ namespace Syslog.Server
                 IsBackground = true
             };
             handler.Start();
-
-            
+          
             /* Main Loop */
             /* Listen for incoming data on udp port 514 (default for SysLog events) */
             while (queueing || messageQueue.Count != 0)
             {
                 try
                 {
-                    
                     anyIP.Port = 514;
+
                     // Receive the message
                     byte[] bytesReceive = udpListener.Receive(ref anyIP);
 
@@ -98,7 +110,32 @@ namespace Syslog.Server
                     // ToDo: Add Error Handling
                 }
             }
+        }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            this.Dispose(true);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposedValue)
+            {
+                if (disposing)
+                {
+                    udpListener.Dispose();
+                }
+
+                this.disposedValue = true;
+            }
         }
 
         /// <summary>
@@ -148,37 +185,10 @@ namespace Syslog.Server
         /// <param name="msg">Message which was sent from the Syslog Client</param>
         /// <param name="ipSourceAddress">Source IP of the Syslog Sender</param>
         /// <param name="receiveTime">Receive Time of the Syslog Message</param>
-        private static void LogToFile(string msg , IPAddress ipSourceAddress, DateTime receiveTime)
+        private static void LogToFile(string msg, IPAddress ipSourceAddress, DateTime receiveTime)
         {
             Log log = new Log();
             log.WriteToLog($"{msg}; {ipSourceAddress}; {receiveTime}\n", logFile);
         }
-
-        #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    udpListener.Dispose();
-                }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
-
-                disposedValue = true;
-            }
-        }
-
-        // This code added to correctly implement the disposable pattern.
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(true);
-        }
-        #endregion
     }
 }
