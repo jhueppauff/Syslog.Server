@@ -16,7 +16,7 @@ namespace Syslog.Server
     using System.Text;
     using System.Threading;
 
-    class Program
+    class Program : IDisposable
     {
         /// <summary>
         /// As long this is true the Service will continue to receive new Messages.
@@ -42,11 +42,6 @@ namespace Syslog.Server
         /// Listener Port and Protocol
         /// </summary>
         private static UdpClient udpListener = new UdpClient(514);
-
-        /// <summary>
-        /// Received Message
-        /// </summary>
-        private static byte[] bytesReceive;
 
         /// <summary>
         /// The log file
@@ -78,9 +73,10 @@ namespace Syslog.Server
             {
                 try
                 {
+                    
                     anyIP.Port = 514;
                     // Receive the message
-                    bytesReceive = udpListener.Receive(ref anyIP);
+                    byte[] bytesReceive = udpListener.Receive(ref anyIP);
 
                     // push the message to the queue, and trigger the queue
                     Data.Message msg = new Data.Message
@@ -157,5 +153,32 @@ namespace Syslog.Server
             Log log = new Log();
             log.WriteToLog($"{msg}; {ipSourceAddress}; {receiveTime}\n", logFile);
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    udpListener.Dispose();
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // TODO: set large fields to null.
+
+                disposedValue = true;
+            }
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+        }
+        #endregion
     }
 }
