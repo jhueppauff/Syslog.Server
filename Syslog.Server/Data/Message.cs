@@ -1,4 +1,12 @@
-﻿namespace Syslog.Server.Data
+﻿//-----------------------------------------------------------------------
+// <copyright file="Message.cs" company="https://github.com/jhueppauff/Syslog.Server">
+// Copyright 2018 Jhueppauff
+// MIT License
+// For licence details visit https://github.com/jhueppauff/Syslog.Server/blob/master/LICENSE
+// </copyright>
+//-----------------------------------------------------------------------
+
+namespace Syslog.Server.Data
 {
     using System;
     using System.Net;

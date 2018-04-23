@@ -1,0 +1,9 @@
+extensions: designer.cs generated.cs
+extensions: .cs .cpp .h
+//-----------------------------------------------------------------------
+// <copyright file="%FileName%" company="https://github.com/jhueppauff/Syslog.Server">
+// Copyright %CurrentYear% Jhueppauff
+// MIT License
+// For licence details visit https://github.com/jhueppauff/Syslog.Server/blob/master/LICENSE
+// </copyright>
+//-----------------------------------------------------------------------
