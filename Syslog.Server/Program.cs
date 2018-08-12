@@ -25,7 +25,7 @@ namespace Syslog.Server
         /// <summary>
         /// As long this is true the Service will continue to receive new Messages.
         /// </summary>
-        private static bool queueing = true;
+        private static readonly bool queueing = true;
 
         /// <summary>
         /// Message Queue of the type Data.Message.
@@ -40,7 +40,7 @@ namespace Syslog.Server
         /// <summary>
         /// Listener Address
         /// </summary>
-        private static IPEndPoint anyIP = new IPEndPoint(IPAddress.Any, 0);
+        private static IPEndPoint anyIP = new IPEndPoint(IPAddress.Any, 514);
         
         /// <summary>
         /// Listener Port and Protocol
